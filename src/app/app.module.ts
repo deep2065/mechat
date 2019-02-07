@@ -12,6 +12,10 @@ import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
 const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
 import { IonicStorageModule } from '@ionic/storage';
+import { MainappService } from './mainapp.service';
+import { HttpClientModule } from '@angular/common/http'; 
+
+import { Toast } from '@ionic-native/toast/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,11 +26,14 @@ import { IonicStorageModule } from '@ionic/storage';
     AppRoutingModule,
     SocketIoModule.forRoot(config),
     IonicStorageModule.forRoot(),
+    HttpClientModule,
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    MainappService,
+    Toast
   ],
   bootstrap: [AppComponent]
 })

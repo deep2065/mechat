@@ -1,9 +1,37 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>login</ion-title>
+<ion-header >
+    
+  <ion-toolbar color="primary">
+      <ion-title>MeChat</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
+  <div *ngIf="submitform">
+    <ion-item>
+        <ion-label position="floating">Mobile Number</ion-label>
+        <ion-input [(ngModel)]="user.mobile" type="number" name="mobile" maxlength="10" minlength="10" required></ion-input>
+    </ion-item>
+    <ion-button expand="full" [disabled]="user.mobile.length<10"  (click)="getOtp()" color="primary">Get OTP</ion-button>
+  </div>
+  <div *ngIf="getotp">
+    <ion-item>
+        <ion-label position="floating">Enter OTP</ion-label>
+        <ion-input [(ngModel)]="otp" type="number" name="otp" maxlength="4" minlength="4" required></ion-input>
+    </ion-item>
+    <ion-button expand="full" [disabled]="otp<4"  (click)="submitOtp()" color="primary">Verify OTP</ion-button>
+  </div>
+
+  <div *ngIf="submitotp">
+    <ion-item>
+        <ion-label position="floating">Your Full Name</ion-label>
+        <ion-input [(ngModel)]="user.fullname" type="text" name="fullname" maxlength="20" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Your Nick Name</ion-label>
+      <ion-input [(ngModel)]="user.nicname" type="text" name="nicname" maxlength="8" required></ion-input>
+  </ion-item>
+    <ion-button expand="full" [disabled]="user.fullname.length<6"  (click)="signupForm()" color="primary">Signup</ion-button>
+  </div>
+
 
 </ion-content>

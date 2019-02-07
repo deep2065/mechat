@@ -24,6 +24,27 @@ export class MainappService {
     });
 
   }
+
+  sendOtp(mobile,callback)
+  {
+    this.httpClient.get(this.baseUrl+"/sendotp/"+mobile).subscribe(otp=>{
+      callback(otp);
+    })
+  }
+
+  verifyotp(mobile,otp,callback)
+  {
+    this.httpClient.get(this.baseUrl+"/verifyotp/"+mobile+"/"+otp).subscribe(verify=>{
+      callback(verify);
+    })
+  }
+
+  signUp(data,callback){
+    let header = {header:"Content-type: application/json"};
+    this.httpClient.post(this.baseUrl+"/signup",data,{headers:header}).subscribe(data=>{
+      callback(data);
+    })
+  }
 }
 
 

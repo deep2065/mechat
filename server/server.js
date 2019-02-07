@@ -8,10 +8,22 @@ app.use(bodyparser.urlencoded());
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "*");
     next();
   });
 
+
+  app.get("/sendotp/:number",(req,res)=>{
+    res.send({"status":"success","msg":"OTP has been send."+req.params.number});
+  })
+
+  app.get("/verifyotp/:number/:otp",(req,res)=>{
+    res.send({"status":"success","msg":"OTP Verified"+req.params.number});
+  })
+
+  app.post("/signup",(req,res)=>{
+    res.send(req.body);
+  })
   
   app.get("/login",(res,req)=>{
       res.send({name:"deepak",password:"123456"});
