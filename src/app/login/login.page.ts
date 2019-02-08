@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MainappService } from '../mainapp.service';
 
 import { Toast } from '@ionic-native/toast/ngx';
+import { Storage } from '@ionic/storage';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,18 +18,24 @@ submitotp=false;
 
 user={
   mobile:'',
-  nicname:"",
+  nickname:"",
   fullname:"",
   country:"IN"
 }
 otp='';
-  constructor(private service :MainappService,private toast: Toast) { }
+  constructor(
+    private service :MainappService,
+    private toast: Toast,
+    private storage: Storage,
+    private route:Router
+    ) { }
 
   ngOnInit() {
   }
 
   getOtp()
   {
+    
     let _self = this;
     this.service.sendOtp(this.user.mobile,function(data){
       console.log(data);
@@ -61,9 +69,15 @@ otp='';
 
       if(data.status=="success")
       {
+        
+        if(!data.msg)
+        {
         _self.submitform=false;
         _self.getotp=false;
         _self.submitotp=true;
+        _self.user.fullname=data.fullname;
+        _self.user.nickname = data.nickname;
+        }
       }else{
         console.log("Error");
       }
@@ -75,8 +89,13 @@ otp='';
 
   signupForm()
   {
+    let _self = this;
     this.service.signUp(this.user,function(data){
-      console.log(data);
+      _self.storage.set('mobile', data.mobile);
+      _self.storage.set('id', data.id);
+      _self.storage.set('is_login', true);
+      localStorage.setItem("is_login","1");
+      _self.route.navigateByUrl("/tabs/Chats");
     })
     
   }

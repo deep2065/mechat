@@ -28,25 +28,24 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      if(this.service.is_login)
-      {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-      this.socket.connect();
+      this.storage.get('mobile').then((val) => {
+        if(val)
+        {
+        this.statusBar.styleDefault();
+        this.splashScreen.hide();
+        this.socket.connect();
+        this.socket.emit("login",val);
       }else{
         this.route.navigateByUrl("/login");
       }
+         });
+      
+     
     });
   }
 
 
 
+
+
 }
-
-
-// storage.set('name', 'Max');
-
-// // Or to get a key/value pair
-// storage.get('age').then((val) => {
-//   console.log('Your age is', val);
-// });
