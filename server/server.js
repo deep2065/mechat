@@ -19,6 +19,7 @@ app.use(bodyparser.urlencoded());
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "*");
+    res.header("Access-Control-Request-Headers","*");
     next();
   });
 
@@ -61,6 +62,43 @@ app.use(function(req, res, next) {
     
   })
   
+  app.get("/getfriends/:id",(req,res)=>{
+    connection.query("SELECT u.* FROM users as u join friends as f on u.mobile=f.mobile where f.user_id="+req.params.id,function(err,rows){
+      if(rows.length>0)
+      {
+        res.send(rows);
+      }else{
+        res.send({"status":"success","msg":"Friends not found"});
+
+      }
+
+    })
+  })
+
+  app.post("/savecontact",(req,res)=>{ 
+    let data=req.body;
+    data.mobile = data.mobile.replace(/(\+91)/g, "");
+    data.mobile = data.mobile.replace(/\s/g, "");
+    connection.query("SELECT * FROM friends WHERE mobile='"+data.mobile+"' and user_id='"+data.uid+"'",function(err,rows){
+      if(rows.length<=0)
+      {
+
+        
+
+        connection.query("INSERT INTO friends (`user_id`, `name`, `mobile`, `country`) VALUES ('"+data.uid+"','"+data.name+"','"+data.mobile+"','"+data.country+"')",function(re){
+         
+          res.send({"status":"success","msg":"contact imported"});
+        })
+
+      }else{
+        res.send({"status":"success","msg":"contact already imported"});
+      }
+    })
+    
+    
+  })
+
+
   app.get("/login",(res,req)=>{
       res.send({name:"deepak",password:"123456"});
   })
@@ -82,15 +120,23 @@ io.on('connection', (socket) => {
       socket.mobile=res.mobile;
       socket.userid=res.id;
 
-      onlineuser[res.mobile]=socket;
-      io.emit('users-changed', {user: res.mobile, event: 'joined'}); 
+      onlineuser[res.id]=socket;
+     // offlineMesaage(socket); 
 
     });
       
   });
   
   socket.on('add-message', (message) => {
-    io.emit('message', {text: message.text, from: socket.nickname, created: new Date()});    
+    
+    message.status="0";
+    if(onlineuser[message.r_id] != undefined)
+    {
+      onlineuser[message.r_id].emit("message",message);
+      message.status="1";
+    }
+
+    savemessage(message);
   });
 });
 
@@ -102,6 +148,28 @@ function getData(mobile,callback)
       callback(rows[0]);
     }
   })
+}
+
+function savemessage(data)
+{
+  connection.query("INSERT INTO messages (`msg`, `s_id`, `r_id`, `status`) VALUES ('"+data.msg+"','"+data.s_id+"','"+data.r_id+"','"+data.status+"')",function(re){
+  })
+}
+
+function offlineMesaage(socket)
+{
+  connection.query("SELECT * FROM message WHERE r_id='"+socket.userid+"' and ststus='0'",function(err,row){
+    if(rows.legth>0)
+    {
+      rows.forEach(element => {
+        socket.emit("message",element);
+        connection.query("UPDATE message set status='1' WHERE id='"+element.id+"'",function(err){
+
+        });
+      });
+
+    }
+  });
 }
  
 var port = process.env.PORT || 3001;

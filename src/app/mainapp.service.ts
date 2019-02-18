@@ -13,7 +13,7 @@ import  'rxjs/add/operator/map';
 })
 export class MainappService {
   is_login=false;
-  baseUrl:string = "http://localhost:3001";
+  baseUrl:string = "http://103.83.130.169:3001";
 
   constructor(private  httpClient : HttpClient) { }
 
@@ -41,9 +41,25 @@ export class MainappService {
 
   signUp(data,callback){
     let header = {header:"Content-type: application/json"};
-    this.httpClient.post(this.baseUrl+"/signup",data,{headers:header}).subscribe(data=>{
-      callback(data);
+    this.httpClient.post(this.baseUrl+"/signup",data,{headers:header}).subscribe(rdata=>{
+      callback(rdata);
     })
+  }
+
+  saveContact(data,callback)
+  {
+    let header = {header:"Content-type: application/json"};
+    this.httpClient.post(this.baseUrl+"/savecontact",data,{headers:header}).subscribe(rdata=>{
+      callback(rdata);
+    })
+  }
+
+  getAllMyFriends(uid,callback)
+  {
+    this.httpClient.get(this.baseUrl+"/getfriends/"+uid).subscribe(friend=>{
+      callback(friend);
+    })
+    
   }
 }
 

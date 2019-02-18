@@ -8,6 +8,7 @@ import { Storage } from '@ionic/storage';
 
 import {MainappService} from './mainapp.service'
 import { Router } from '@angular/router';
+import { ContactsService } from './contacts.service';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,8 @@ export class AppComponent {
     private socket: Socket,
     private storage: Storage,
     private service:MainappService,
-    private route:Router
+    private route:Router,
+    private contact:ContactsService, 
   ) {
     this.initializeApp();
   }
@@ -35,6 +37,7 @@ export class AppComponent {
         this.splashScreen.hide();
         this.socket.connect();
         this.socket.emit("login",val);
+        this.contact.saveContact();
       }else{
         this.route.navigateByUrl("/login");
       }
@@ -44,6 +47,8 @@ export class AppComponent {
     });
   }
 
+
+  
 
 
 

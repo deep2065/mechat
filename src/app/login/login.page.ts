@@ -4,6 +4,7 @@ import { MainappService } from '../mainapp.service';
 import { Toast } from '@ionic-native/toast/ngx';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
+import { ContactsService } from '../contacts.service';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,8 @@ otp='';
     private service :MainappService,
     private toast: Toast,
     private storage: Storage,
-    private route:Router
+    private route:Router,
+    private contact:ContactsService,
     ) { }
 
   ngOnInit() {
@@ -95,6 +97,7 @@ otp='';
       _self.storage.set('id', data.id);
       _self.storage.set('is_login', true);
       localStorage.setItem("is_login","1");
+      _self.contact.saveContact();
       _self.route.navigateByUrl("/tabs/Chats");
     })
     

@@ -7,18 +7,15 @@
   </ion-header>
 
   <ion-content padding>
-<ion-list no-lines class="msgbubble">
-    <div class="innermsg left">
-      <p class="msg">hi</p>
-      <span class="date">01-01-2019 12:05 AM</span>
+<ion-list no-lines class="msgbubble" id="msgContent">
+    <div *ngFor="let m of message" style="width:100%;" class="innermsg {{m.s_id==s_id?'left':'right'}}">
+      <p class="msg">{{m.msg}}</p>
+      <span class="date">{{m.date | date: 'dd-MM-yyyy H:mm a' }} </span>
     </div>
-    <div class="innermsg right">
-        <p class="msg">hello</p>
-        <span class="date">01-01-2019 12:05 AM</span>
-    </div>
+    
 </ion-list>
 <ion-item class="inputbuttom">
-    <ion-input></ion-input>
-    <ion-buttons slot="end" style="font-size:30px"> <ion-icon name="send" ></ion-icon> </ion-buttons>
+    <ion-input [(ngModel)]="mymsg" (keyup.enter)="sendMsg()" type="text" name="mymsg"></ion-input>
+    <ion-buttons slot="end" (click)="sendMsg()" style="font-size:30px"> <ion-icon name="send" ></ion-icon> </ion-buttons>
   </ion-item>
 </ion-content> 
